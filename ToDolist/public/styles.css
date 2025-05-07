@@ -1,0 +1,19 @@
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+}
+body.dark-mode .sidebar {
+    background-color: #2c2c2c;
+    color: white;
+}
+body.dark-mode .main-content {
+    background-color: #2e2e2e;
+}
+body.dark-mode .search-container {
+    background-color: #3a3a3a;
+    color: #ccc;
+}
+body.dark-mode .calendar-icon,
+body.dark-mode .search-icon {
+    color: #ccc;
+}

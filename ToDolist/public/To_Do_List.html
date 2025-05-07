@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/darkmode.js" defer></script>
+  <style>
+    @import "@fortawesome/fontawesome-free/css/all.min.css";
+
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+
+    .sidebar {
+      width: 200px;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      height: 100%;
+      transition: transform 0.3s ease;
+      transform: translateX(0);
+      border-radius: 40px;
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: sticky;
+      top: 10px;
+      left: 190px;
+      background: #ffffff;
+      color: rgb(0, 0, 0);
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      height: 100%;
+      cursor: pointer;
+      transition: left 0.3s ease;
+
+    }
+
+    .menu-toggle.hidden {
+      left: 10px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      margin-left: 250px;
+      transition: margin-left 0.3s ease;
+
+    }
+
+    .main-content.full {
+      margin-left: 0;
+    }
+
+    .sidebar h2,
+    .sidebar h3 {
+      margin: 0;
+      padding-bottom: 10px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .sidebar ul li.active {
+      background: #ddd;
+      font-weight: bold;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 1000px;
+
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    .search-icon {
+      margin-right: 6px;
+      color: #888;
+    }
+
+    .search-bar {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 12px;
+    }
+
+
+
+    .task-columns {
+      display: flex;
+      gap: 20px;
+    }
+
+    .column {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      flex: 1;
+    }
+
+    .column h2 {
+      margin-top: 0;
+    }
+
+    .task {
+      background: #e9ecef;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-task-btn {
+
+      background: #8345a0;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      margin-left: 445px;
+      margin-top: -30px;
+    }
+
+    .add-task-btn:hover {
+      background: #d478ff;
+    }
+
+    .edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: 5px;
+      font-size: 16px;
+    }
+
+    .task-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .task-actions button,
+    .task-actions label {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: inline-block;
+    }
+
+    .edit-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .upload-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .task-actions button:hover,
+    .task-actions label:hover {
+      opacity: 0.9;
+    }
+
+    .task-due-date {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar" id="sidebar">
+    <h2>Project TDL</h2>
+    <ul>
+      <li>Tasks</li>
+      <a href="/Profile.html">
+        <li>Profile</li>
+      </a>
+
+    </ul>
+    <a href="/login.html">
+      <i class="fas fa-sign-out-alt"></i> Log Out
+    </a>
+
+  </div>
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="main-content" id="mainContent">
+
+
+    <div class="search-wrapper">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search for anything...">
+      </div>
+      <button id="darkModeToggle">🌙 Toggle Dark Mode</button>
+    </div>
+
+    <h1>ToDoList</h1>
+    <div class="task-columns">
+      <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>To Do <button class="add-task-btn" onclick="addTask()">+</button></h2>
+
+      </div>
+      <div class="column" id="progress" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>On Progress</h2>
+
+      </div>
+      <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h2>Done</h2>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('full');
+      menuToggle.classList.toggle('hidden');
+    });
+
+    function getTasks() {
+      fetch('/api/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+          tasks.forEach(task => {
+            const taskElement = document.createElement("div");
+            taskElement.className = "task";
+            taskElement.id = `task-${task.id}`;
+            taskElement.draggable = true;
+            taskElement.ondragstart = drag;
+
+            // สร้างเนื้อหาภายใน task
+            let taskInnerHTML = `
+            <span class="task-text">${task.task_name}</span>
+            <div class="task-due-date">Due: ${task.due_date || 'Not set'}</div>
+            <button class="edit-btn" onclick="editTask(this)">🖉</button>
+          `;
+
+
+            // ตรวจสอบว่า task มีไฟล์แนบหรือไม่
+            if (task.file_path) {
+              taskInnerHTML += `
+            <a href="${task.file_path}" target="_blank" class="upload-btn">📁</a>
+            <button class="delete-btn" onclick="deleteAttachment(${task.id})">🗑️</button>
+          `;
+            }
+            else {
+              taskInnerHTML += `
+            <label for="file-upload-${task.id}" class="upload-btn">📁</label>
+            <input type="file" id="file-upload-${task.id}" style="display: none;" onchange="handleFileUpload(event)" />
+          `;
+            }
+
+            taskInnerHTML += `<button class="delete-btn" onclick="deleteTask(this)">❌</button>`;
+            taskElement.innerHTML = taskInnerHTML;
+
+            document.getElementById(task.status).appendChild(taskElement);
+          });
+        })
+        .catch(error => console.error('❌ Error loading tasks:', error));
+    }
+
+
+
+    function addTask() {
+      const taskText = prompt("Enter task name:");
+      if (taskText) {
+        const dueDate = prompt("Enter due date (YYYY-MM-DD):"); // 👈 เพิ่ม prompt วันที่
+
+        const taskId = new Date().getTime();
+        const task = document.createElement("div");
+        task.className = "task";
+        task.id = `task-${taskId}`;
+        task.draggable = true;
+        task.ondragstart = drag;
+        task.innerHTML = `
+      <span class="task-text">${taskText}</span>
+      <div class="task-due-date">Due: ${dueDate || 'Not set'}</div>
+      <button class="edit-btn" onclick="editTask(this)">🖉</button>
+      <label for="file-upload-${taskId}" class="upload-btn">📁</label>
+      <input type="file" id="file-upload-${taskId}" style="display: none;" onchange="handleFileUpload(event)" />
+      <button class="delete-btn" onclick="deleteTask(this)">❌</button>
+    `;
+        document.getElementById("todo").appendChild(task);
+
+        // ✅ ส่งข้อมูลไป backend พร้อมวันกำหนดส่ง
+        fetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task_name: taskText,
+            status: 'todo',
+            due_date: dueDate || null
+          })
+        })
+          .then(response => response.json())
+          .then(data => {
+            task.id = `task-${data.id}`; // เปลี่ยน ID เป็นของจริงจาก backend
+          })
+          .catch(error => {
+            console.error('❌ Error saving task:', error);
+          });
+      }
+    }
+
+
+
+
+    function handleFileUpload(event) {
+      const fileInput = event.target;
+      const file = fileInput.files[0];
+      const taskElement = fileInput.closest('.task');
+      const taskId = taskElement.id.replace('task-', '');
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      fetch(`/api/upload/${taskId}`, {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // ลบ label และ input เดิมออก
+            fileInput.previousElementSibling.remove(); // remove <label>
+            fileInput.remove(); // remove <input>
+
+            // สร้าง wrapper สำหรับดาวน์โหลดและลบ
+            const container = document.createElement('div');
+            container.style.display = 'inline-flex';
+            container.style.alignItems = 'center';
+            container.style.gap = '6px';
+
+            // เพิ่มลิงก์ดาวน์โหลด
+            const downloadLink = document.createElement('a');
+            downloadLink.href = data.filePath;
+            downloadLink.target = '_blank';
+            downloadLink.className = 'upload-btn';
+            downloadLink.innerHTML = '📁';
+            container.appendChild(downloadLink);
+
+
+            // เพิ่มปุ่มลบไฟล์
+            const deleteFileBtn = document.createElement('button');
+            deleteFileBtn.textContent = '❌';
+            deleteFileBtn.className = 'delete-btn';
+            deleteFileBtn.onclick = () => deleteAttachment(taskId);
+            container.appendChild(deleteFileBtn);
+
+            // เพิ่มเข้าไปใน task
+            taskElement.querySelector('.task-actions')?.appendChild(container) || taskElement.appendChild(container);
+          } else {
+            alert('Upload failed');
+          }
+        })
+        .catch(err => {
+          console.error('Upload error:', err);
+          alert('Upload error');
+        });
+    }
+
+
+
+    function deleteAttachment(taskId) {
+      if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบไฟล์แนบนี้?')) return;
+
+      fetch(`/api/upload/${taskId}`, {
+        method: 'DELETE'
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert('ลบไฟล์เรียบร้อย');
+
+          const taskElement = document.getElementById(`task-${taskId}`);
+
+          // ลบกล่องดาวน์โหลด + ปุ่มลบ
+          const downloadContainer = [...taskElement.children].find(child =>
+            child.tagName === 'DIV' && child.querySelector('a.upload-btn')
+          );
+          if (downloadContainer) downloadContainer.remove();
+
+          // เพิ่ม input สำหรับอัปโหลดไฟล์ใหม่
+          const taskActions = taskElement.querySelector('.task-actions') || taskElement;
+
+          const label = document.createElement('label');
+          label.className = 'upload-btn';
+          label.textContent = '📎'; // ไอคอนคลิปหนีบกระดาษ
+          label.setAttribute('for', `file-${taskId}`);
+
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.id = `file-${taskId}`;
+          input.name = 'file';
+          input.style.display = 'none'; // ซ่อนไว้เหมือนเดิมถ้าใช้ label คลุม
+          input.addEventListener('change', handleFileUpload);
+
+          label.appendChild(input);
+          taskActions.appendChild(label);
+        })
+        .catch(err => {
+          console.error('เกิดข้อผิดพลาดในการลบไฟล์:', err);
+          alert('เกิดข้อผิดพลาดในการลบไฟล์');
+        });
+    }
+
+
+
+    function updateTaskStatus(taskId, newStatus) {
+      console.log('Updating Task Status:', { taskId, newStatus });
+
+      fetch(`/tasks/${taskId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('ไม่สามารถอัปเดตสถานะได้');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('✅ อัปเดตสถานะสำเร็จ:', data);
+        })
+        .catch(error => {
+          console.error('❌ การอัปเดตสถานะล้มเหลว:', error);
+        });
+    }
+
+
+
+    function editTask(button) {
+      const task = button.parentElement;
+      const taskTextElement = task.querySelector(".task-text");
+      const newTaskText = prompt("Edit task name:", taskTextElement.textContent);
+      const taskId = task.id.replace("task-", "");
+
+      if (newTaskText !== null && newTaskText.trim() !== "") {
+        taskTextElement.textContent = newTaskText;
+
+        // ✅ แก้ URL ให้ถูกต้องตาม backend
+        fetch(`/api/tasks/${taskId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task_name: newTaskText })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("ไม่สามารถอัปเดต task ได้");
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('✅ แก้ไขสำเร็จ:', data);
+          })
+          .catch(error => {
+            console.error('❌ แก้ไข task ล้มเหลว:', error);
+            alert("ไม่สามารถแก้ไข task ได้");
+          });
+      }
+    }
+
+
+
+    function deleteTask(button) {
+      const taskElement = button.parentElement;
+      const taskId = taskElement.id.replace('task-', '');
+
+      // เรียก API ลบ task ที่ backend
+      fetch(`/tasks/${taskId}`, {
+        method: 'DELETE'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('ลบไม่สำเร็จ');
+          }
+          taskElement.remove(); // ลบจากหน้า UI ถ้าลบใน server สำเร็จ
+        })
+        .catch(error => {
+          console.error('❌ เกิดข้อผิดพลาดในการลบ:', error);
+          alert('ไม่สามารถลบงานนี้ได้');
+        });
+    }
+
+
+
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drag(event) {
+      event.dataTransfer.setData("text", event.target.id);
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      const taskId = event.dataTransfer.getData("text/plain");
+      const task = document.getElementById(taskId);
+      const targetColumn = event.currentTarget;
+
+      if (targetColumn.classList.contains('column')) {
+        targetColumn.appendChild(task);
+
+        // 👉 อัปเดต status บน backend (เช่น "todo", "progress", "done")
+        const newStatus = targetColumn.id;
+        const rawTaskId = taskId.replace("task-", "");
+        updateTaskStatus(rawTaskId, newStatus);
+      }
+    }
+
+
+    function filterTasks() {
+      const searchInput = document.getElementById('searchBar').value.toLowerCase();
+      const tasks = document.querySelectorAll('.task');
+
+      tasks.forEach(task => {
+        const taskText = task.querySelector('.task-text').textContent.toLowerCase();
+        if (taskText.includes(searchInput)) {
+          task.style.display = '';
+        } else {
+          task.style.display = 'none';
+        }
+      });
+    }
+    document.getElementById('searchBar').addEventListener('input', filterTasks);
+
+    function drag(event) {
+      event.dataTransfer.setData("text/plain", event.target.id);
+    }
+
+
+    document.body.addEventListener('change', function (event) {
+      if (event.target && event.target.matches('input[type="file"][id^="file-upload"]')) {
+        const file = event.target.files[0];
+        if (file) {
+          alert(`คุณได้เลือกไฟล์: ${file.name}`);
+          // เพิ่มโค้ดอัปโหลดไฟล์ที่นี่
+        }
+      }
+    });
+    window.onload = () => {
+      getTasks();
+    };
+
+
+  </script>
+</body>
+
+</html>

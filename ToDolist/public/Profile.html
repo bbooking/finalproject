@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/darkmode.js" defer></script>
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100%;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+            border-radius: 40px;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .menu-toggle {
+            position: sticky;
+            top: 10px;
+            left: 190px;
+            background: #ffffff;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            height: 100%;
+            cursor: pointer;
+            transition: left 0.3s ease;
+
+        }
+
+        .menu-toggle.hidden {
+            left: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+
+        }
+
+        .main-content.full {
+            margin-left: 0;
+        }
+
+        .sidebar h2,
+        .sidebar h3 {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar ul li.active {
+            background: #ddd;
+            font-weight: bold;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1000px;
+
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .search-icon {
+            margin-right: 6px;
+            color: #888;
+        }
+
+        .search-bar {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .calendar-icon {
+            color: #888;
+            cursor: pointer;
+            font-size: 20px;
+
+
+        }
+
+        .task-columns {
+            display: flex;
+            gap: 20px;
+        }
+
+        .column {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        .column h2 {
+            margin-top: 0;
+        }
+
+        .task {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-task-btn {
+
+            background: #8345a0;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-left: 445px;
+            margin-top: -30px;
+        }
+
+        .add-task-btn:hover {
+            background: #d478ff;
+        }
+
+        .edit-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 16px;
+        }
+
+        .task-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .task-actions button,
+        .task-actions label {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: inline-block;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .upload-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .task-actions button:hover,
+        .task-actions label:hover {
+            opacity: 0.9;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>โปรไฟล์ผู้ใช้</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="sidebar" id="sidebar">
+        <h2>Project TDL</h2>
+        <ul>
+            <a href="/To_Do_List.html"> 
+                <li>Tasks</li>
+            </a>
+                    <li>Profile</li>
+               
+
+        </ul>
+        <a href="/login.html">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+        </a>
+
+    </div>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <div class="main-content" id="mainContent">
+
+
+        <div class="search-wrapper">
+            <button id="darkModeToggle">🌙 Toggle Dark Mode</button>
+        </div>
+
+        <!-- วางไว้แทน <div class="container"> เดิมใน main-content -->
+        <div class="container" style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+            <div style="
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        ">
+                <h1 style="color: #6a1b9a;">👤 โปรไฟล์ของคุณ</h1>
+                <div style="text-align: left; margin-top: 30px;">
+                    <p style="font-size: 18px; margin: 10px 0;">
+                        <strong>👨‍💼 ชื่อผู้ใช้:</strong> <span id="username" style="color: #333;"></span>
+                    </p>
+                    <p style="font-size: 18px; margin: 10px 0;">
+                        <strong>📧 อีเมล:</strong> <span id="email" style="color: #333;"></span>
+                    </p>
+                    <p style="font-size: 18px; margin: 10px 0;">
+                        <strong>📞 เบอร์โทร:</strong> <span id="phone" style="color: #333;"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- วางไว้แทน <div class="container"> เดิมใน main-content -->
+        <div class="container" style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+            <div style="
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        ">
+                <h1 style="color: #6a1b9a;">👤 โปรไฟล์ของคุณ</h1>
+                <div style="text-align: left; margin-top: 30px;">
+                    <p style="font-size: 18px; margin: 10px 0;">
+                        <strong>👨‍💼 ชื่อผู้ใช้:</strong> <span id="username" style="color: #333;"></span>
+                    </p>
+                    <p style="font-size: 18px; margin: 10px 0;">
+                        <strong>📧 อีเมล:</strong> <span id="email" style="color: #333;"></span>
+                    </p>
+                    <p style="font-size: 18px; margin: 10px 0;">
+                        <strong>📞 เบอร์โทร:</strong> <span id="phone" style="color: #333;"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <script>
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('full');
+                menuToggle.classList.toggle('hidden');
+            });
+
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const user = JSON.parse(localStorage.getItem('user')); // ดึง user object จาก localStorage
+                if (!user || !user.email) {
+                    return alert('ไม่พบข้อมูลผู้ใช้ กรุณาเข้าสู่ระบบใหม่');
+                }
+
+                // ดึงข้อมูลจาก API
+                fetch(`/api/profile?email=${encodeURIComponent(user.email)}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('ไม่สามารถดึงข้อมูลผู้ใช้');
+                        return res.json();
+                    })
+                    .then(data => {
+                        console.log('✅ ข้อมูลจาก API:', data);
+                        // แสดงผลใน DOM
+                        document.getElementById('username').textContent = data.username;
+                        document.getElementById('email').textContent = data.email;
+                        document.getElementById('phone').textContent = data.phone;
+                    })
+                    .catch(err => {
+                        console.error('❌ เกิดข้อผิดพลาด:', err);
+                    });
+            });
+
+
+
+        </script>
+
+</body>
+
+</html>
